@@ -52,9 +52,17 @@ module ActiveJob
       define_retry_callback(base)
     end
 
-    private
+    def retry_delay(retry_attempt, exception)
+      @backoff_strategy.retry_delay retry_attempt, exception
+    end
+
+    def should_retry?(retry_attempt, exception)
+      @backoff_strategy.should_retry? retry_attempt, exception
+    end
 
     attr_reader :backoff_strategy, :retry_callback
+
+    private
 
     def define_backoff_strategy(klass)
       klass.instance_variable_set(:@backoff_strategy, @backoff_strategy)
